@@ -138,4 +138,29 @@ class StudyTest {
     public void create2() {
         System.out.println("사용하고 싶지 않은 테스트일 경우 @Disabled 를 붙인다.");
     }
+
+
+    /**
+     * 태깅과 필터링
+     * 에너테이션을 사용하여 태스트를 그룹화 시킬 수 있다.
+     * 하나의 테스트 메소드에 여러 태그도 사용 가능하다.
+     * Edit Configurations.. 에서 class 설정이 아닌 tags 로 변경후 tag 값을 넣어주면 된다.
+     * 터미널에서 명령어:  ./gradlew test  로 하게되면 test 가 전체 수행되지만, maven, gradle 로 profile 환경을 나누면 띠로 실행도 가능하다.
+     */
+    @Test
+    @DisplayName("태그를 통한 지정 테스트 - fast")
+    @Tag("fast")
+    void taggingTest_tag_fast() {
+        Study study = new Study(10);
+        assertThat(study.getLimit()).isGreaterThan(0);
+    }
+
+    @Test
+    @DisplayName("태그를 통한 지정 테스트 - slow")
+    @Tag("slow")
+    void taggingTest_tag_slow() {
+        Study study = new Study(10);
+        assertThat(study.getLimit()).isGreaterThan(0);
+    }
+
 }
