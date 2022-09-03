@@ -7,6 +7,8 @@ import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Duration;
@@ -180,6 +182,25 @@ class StudyTest {
         Study study = new Study(10);
         assertThat(study.getLimit()).isGreaterThan(0);
     }
+
+    /**
+     * 반복 테스트 repetitionInfo 인자를 통해 현재 몇번째 반복인지 알 수 있다.
+     * 반복시 마다 매개변수의 값을 변경하면서 테스트 하고 싶다면 ParameterizedTest 를 이용하면 된다.
+     */
+    @DisplayName("반복 테스트를 진행한다.")
+    @RepeatedTest(value = 5, name = "{displayName} {currentRepetition}/{totalRepetitions}")
+    void repeatTest(RepetitionInfo repetitionInfo) {
+        log.info("반복 테스트 {}", repetitionInfo);
+    }
+
+    @ParameterizedTest(name = "{index} {displayName} message = {0}")
+    @ValueSource(strings = {"a", "b", "c", "d"})
+    @DisplayName("매개변수 변경 반복 테스트")
+    void parameterizedTest(String message) {
+        log.info("message: {}", message);
+    }
+
+
 
 
 }
