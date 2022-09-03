@@ -7,8 +7,16 @@ import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.aggregator.AggregateWith;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregationException;
+import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
+import org.junit.jupiter.params.converter.ArgumentConversionException;
+import org.junit.jupiter.params.converter.ConvertWith;
+import org.junit.jupiter.params.converter.SimpleArgumentConverter;
+import org.junit.jupiter.params.provider.*;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.time.Duration;
@@ -200,7 +208,61 @@ class StudyTest {
         log.info("message: {}", message);
     }
 
+    @ParameterizedTest(name = "{index} {displayName} message = {0}")
+    @ValueSource(strings = {"a", "b", "c", "d"})
+//    @EmptySource //인자에 빈값을 추가한다
+//    @NullSource //인자에 널값을 추가한다
+    @NullAndEmptySource //위 2가지 annotaion 을 합친경우
+    @DisplayName("매개변수 변경 반복 테스트 2")
+    void parameterizedTest2(String message) {
+        log.info("message: {}", message);
+    }
 
+    @ParameterizedTest(name = "{index} {displayName} message = {0}")
+    @ValueSource(ints = {10, 20, 30, 40})
+    @DisplayName("StudyConvert 를 이용한 테스트")
+    void parameterizedTest3(@ConvertWith(StudyConvert.class) Study study ) {
+        log.info("message: {}", study.getLimit());
+    }
+
+    @ParameterizedTest(name = "{index} {displayName} message = {0}")
+    @CsvSource({"10, '자바 스터디'", "20, '닷넷 스터디'"})
+    @DisplayName("CsvSource 를 이용한 매개변수 받기")
+    void parameterizedTest4(Integer limit, String name) {
+        Study study = new Study(limit, name);
+        log.info("message: {}", study);
+    }
+
+    @ParameterizedTest(name = "{index} {displayName} message = {0}")
+    @CsvSource({"10, '자바 스터디'", "20, '닷넷 스터디'"})
+    @DisplayName("CsvSource 와 argumentsAccessor 를 이용한 객체 받아 파싱")
+    void parameterizedTest5(ArgumentsAccessor argumentsAccessor) {
+        Study study = new Study(argumentsAccessor.getInteger(0), argumentsAccessor.getString(1));
+        log.info("message: {}", study);
+    }
+
+    @ParameterizedTest(name = "{index} {displayName} message = {0}")
+    @CsvSource({"10, '자바 스터디'", "20, '닷넷 스터디'"})
+    @DisplayName("CsvSource 와 argumentsAccessor 를 이용한 파싱된 객체 받기")
+    void parameterizedTest6(@AggregateWith(StudyAggregator.class) Study study) {
+        log.info("message: {}", study);
+    }
+
+    //매개변수 convert
+    static class StudyConvert extends SimpleArgumentConverter {
+        @Override
+        protected Object convert(Object source, Class<?> targetType) throws ArgumentConversionException {
+            assertThat(Study.class).as("Can only convert to String").isEqualTo(targetType);
+            return new Study(Integer.parseInt(source.toString()));
+        }
+    }
+    //객체로 변환
+    static class StudyAggregator implements ArgumentsAggregator {
+        @Override
+        public Object aggregateArguments(ArgumentsAccessor accessor, ParameterContext context) throws ArgumentsAggregationException {
+            return new Study(accessor.getInteger(0), accessor.getString(1));
+        }
+    }
 
 
 }
