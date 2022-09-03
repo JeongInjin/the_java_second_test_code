@@ -163,4 +163,23 @@ class StudyTest {
         assertThat(study.getLimit()).isGreaterThan(0);
     }
 
+    /**
+     * 커스텀 태그
+     * Annotation 을 생성하여, Tag Annotaion 을 달지않고도 같은 효과를 가질 수 있다.
+     */
+    @FastTest
+    @DisplayName("커스텀 태그를 통한 지정 테스트 - fast")
+    void custom_tag_fast() {
+        Study study = new Study(10);
+        assertThat(study.getLimit()).isGreaterThan(0);
+    }
+
+    @SlowTest
+    @DisplayName("커스텀 태그를 통한 지정 테스트 - fast")
+    void custom_tag_slow() {
+        Study study = new Study(10);
+        assertThat(study.getLimit()).isGreaterThan(0);
+    }
+
+
 }
