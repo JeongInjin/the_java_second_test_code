@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class StudyTest {
 
     @BeforeAll
@@ -28,14 +29,15 @@ class StudyTest {
     }
 
     @Test
-    public void create() {
+    @DisplayName("스터디 만들기 \uD83D\uDE0E")
+    public void create_new_study() {
         Study study = new Study();
         Assertions.assertThat(study).isNotNull();
         System.out.println("create");
     }
 
     @Test
-    public void create1() {
+    public void create_new_study_again() {
         System.out.println("create1");
     }
 
