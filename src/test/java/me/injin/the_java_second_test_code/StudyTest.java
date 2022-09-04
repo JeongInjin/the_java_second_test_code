@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assumptions.assumingThat;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)//displayName 전략 딱히 필요x
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class) //순서
 class StudyTest {
     private final static Logger log = LogManager.getLogger(StudyTest.class);
 
@@ -275,14 +276,17 @@ class StudyTest {
      * -참고: beforeAll, afterAll 은 반드시 static class 여야하지만, TestInstance 의 옵션이 perClass 일 경우 static 이 아니여도 된다.
      */
     int number = 0;
+
+    @Order(0)
     @Test
-    @DisplayName("@TestInstance 의 작동 테스트1")
+    @DisplayName("@TestInstance 의 작동 테스트1 - 순서도 추가")
     void TestInstance1() {
         log.info("number: {}", number++);
     }
 
+    @Order(1)
     @Test
-    @DisplayName("@TestInstance 의 작동 테스트2")
+    @DisplayName("@TestInstance 의 작동 테스트2 - 순서도 추가")
     void TestInstance2() {
         log.info("number: {}", number++);
     }
