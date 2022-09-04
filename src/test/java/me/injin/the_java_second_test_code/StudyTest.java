@@ -16,16 +16,19 @@ import org.junit.jupiter.params.aggregator.ArgumentsAggregator;
 import org.junit.jupiter.params.converter.ArgumentConversionException;
 import org.junit.jupiter.params.converter.ConvertWith;
 import org.junit.jupiter.params.converter.SimpleArgumentConverter;
-import org.junit.jupiter.params.provider.*;
-import org.springframework.beans.factory.annotation.Value;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.Duration;
-import static org.assertj.core.api.Assertions.*;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assumptions.assumingThat;
 
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)//displayName 전략 딱히 필요x
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class StudyTest {
     private final static Logger log = LogManager.getLogger(StudyTest.class);
 
@@ -264,5 +267,24 @@ class StudyTest {
         }
     }
 
+    /**
+     * 테스트 인스턴스
+     * 테스트 클래스는 각 메서드를 생성시마다 새로운 인스턴스를 생성하기 때문에 전역변수를 사용해도 초기값만 나온다.(ex: int n = 1, n++, n++...)
+     *      - 해당 방식으로 진행하는 이유는 테스트간의 의존성을 없애기 위해서임.
+     * 전략변경을 원한다면 TestInstance annotaion 을 이용해야함.
+     * -참고: beforeAll, afterAll 은 반드시 static class 여야하지만, TestInstance 의 옵션이 perClass 일 경우 static 이 아니여도 된다.
+     */
+    int number = 0;
+    @Test
+    @DisplayName("@TestInstance 의 작동 테스트1")
+    void TestInstance1() {
+        log.info("number: {}", number++);
+    }
+
+    @Test
+    @DisplayName("@TestInstance 의 작동 테스트2")
+    void TestInstance2() {
+        log.info("number: {}", number++);
+    }
 
 }
