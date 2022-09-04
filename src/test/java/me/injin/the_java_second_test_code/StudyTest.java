@@ -7,7 +7,10 @@ import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.extension.Extensions;
 import org.junit.jupiter.api.extension.ParameterContext;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.aggregator.AggregateWith;
 import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
@@ -27,11 +30,16 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 import static org.junit.jupiter.api.Assumptions.assumingThat;
 
+//@ExtendWith(FindSlowTestExtentsion.class) //해당 클래스를 생성자 없이 공통적용하려면.. - 선언적인 등록 방식
 //@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)//displayName 전략 딱히 필요x 필요시 test > resources 로 설정 이관
 //@TestInstance(TestInstance.Lifecycle.PER_CLASS) //필요시 test > resources 로 설정 이관
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class) //순서
 class StudyTest {
     private final static Logger log = LogManager.getLogger(StudyTest.class);
+
+    //아래는 @ExtendWith(FindSlowTestExtentsion.class) 를 생성자로 받아내기위한(커스텀하게 개별로) - 프로그래밍 등록 방식
+    @RegisterExtension
+    static FindSlowTestExtentsion findSlowTestExtentsion = new FindSlowTestExtentsion(500L);
 
 //    @BeforeAll
 //    static void beforeAll() {
@@ -121,7 +129,7 @@ class StudyTest {
     }
 
     /**
-     * Annotaion 조건에 따른 설정으로 테스트를 추가, 제외 시킬 수 있다.
+     * Annotation 조건에 따른 설정으로 테스트를 추가, 제외 시킬 수 있다.
      * https://effortguy.tistory.com/121
      */
     @Test
@@ -132,7 +140,7 @@ class StudyTest {
     }
 
     @Test
-    @DisplayName("Annotaion Enabled OS 조건에 따른 테스트.")
+    @DisplayName("Annotation Enabled OS 조건에 따른 테스트.")
 //    @EnabledOnOs(OS.MAC)
     @EnabledOnOs({OS.MAC, OS.SOLARIS})
     public void EnabledOnOsMAC() {
@@ -140,7 +148,7 @@ class StudyTest {
     }
 
     @Test
-    @DisplayName("Annotaion Disabled OS 조건에 따른 테스트.")
+    @DisplayName("Annotation Disabled OS 조건에 따른 테스트.")
     @DisabledOnOs({OS.WINDOWS, OS.LINUX})
     public void EnabledOnOsWINDOWS() {
         log.info("DisabledOnOs: OS.WINDOWS, OS.LINUX 가 아닙니다.");
@@ -179,7 +187,7 @@ class StudyTest {
 
     /**
      * 커스텀 태그
-     * Annotation 을 생성하여, Tag Annotaion 을 달지않고도 같은 효과를 가질 수 있다.
+     * Annotation 을 생성하여, Tag Annotation 을 달지않고도 같은 효과를 가질 수 있다.
      */
     @FastTest
     @DisplayName("커스텀 태그를 통한 지정 테스트 - fast")
@@ -216,7 +224,7 @@ class StudyTest {
     @ValueSource(strings = {"a", "b", "c", "d"})
 //    @EmptySource //인자에 빈값을 추가한다
 //    @NullSource //인자에 널값을 추가한다
-    @NullAndEmptySource //위 2가지 annotaion 을 합친경우
+    @NullAndEmptySource //위 2가지 Annotation 을 합친경우
     @DisplayName("매개변수 변경 반복 테스트 2")
     void parameterizedTest2(String message) {
         log.info("message: {}", message);
@@ -272,7 +280,7 @@ class StudyTest {
      * 테스트 인스턴스
      * 테스트 클래스는 각 메서드를 생성시마다 새로운 인스턴스를 생성하기 때문에 전역변수를 사용해도 초기값만 나온다.(ex: int n = 1, n++, n++...)
      *      - 해당 방식으로 진행하는 이유는 테스트간의 의존성을 없애기 위해서임.
-     * 전략변경을 원한다면 TestInstance annotaion 을 이용해야함.
+     * 전략변경을 원한다면 TestInstance Annotation 을 이용해야함.
      * -참고: beforeAll, afterAll 은 반드시 static class 여야하지만, TestInstance 의 옵션이 perClass 일 경우 static 이 아니여도 된다.
      */
     int number = 0;
@@ -291,4 +299,28 @@ class StudyTest {
         log.info("number: {}", number++);
     }
 
+    /**
+     * 확장 모델
+     * JUnit5 는 확장 모델은 단 하나 -> Extension
+     * - 확장팩 등록 방법
+     *      - 선언전인 등록 @ExtendWith
+     *      - 프로그래밍 등록 @RegisterExtension
+     *      - 자동 등록 자바 Serv
+     */
+    @Order(3)
+    @Test
+    @DisplayName("@ExtendWith(class Annotation) 을 이용한 선언적인 등록 => 느린 메서드 찾기")
+    void fineSlowTest1() throws InterruptedException {
+        Thread.sleep(500);
+        log.info("fineSlowTest1");
+    }
+
+    @Order(2)
+    @Test
+    @SlowTest
+    @DisplayName("@ExtendWith SlowTest Annotation 이 있는경우 권고 로그를 내지 않는다.")
+    void fineSlowTest2() throws InterruptedException {
+        Thread.sleep(500);
+        log.info("fineSlowTest1");
+    }
 }
