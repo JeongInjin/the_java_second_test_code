@@ -1,10 +1,10 @@
 package me.injin.the_java_second_test_code.study;
 
+import me.injin.the_java_second_test_code.domain.Member;
 import me.injin.the_java_second_test_code.domain.Study;
 import me.injin.the_java_second_test_code.member.InvalidMemberException;
 import me.injin.the_java_second_test_code.member.MemberService;
 
-import java.lang.reflect.Member;
 import java.util.Optional;
 
 public class StudyService {
@@ -18,7 +18,7 @@ public class StudyService {
         this.repository = repository;
     }
 
-    public Study createNewStudy(Long memberId, Study study) throws InvalidMemberException {
+    public Study createNewStudy(Long memberId, Study study) {
         assert memberService != null;
         assert repository != null;
 

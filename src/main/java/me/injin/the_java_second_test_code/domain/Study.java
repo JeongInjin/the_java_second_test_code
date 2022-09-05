@@ -2,8 +2,6 @@ package me.injin.the_java_second_test_code.domain;
 
 import me.injin.the_java_second_test_code.study.StudyStatus;
 
-import java.lang.reflect.Member;
-
 public class Study {
     private StudyStatus status = StudyStatus.DRAFT;
 
@@ -11,7 +9,7 @@ public class Study {
 
     private String name;
 
-    public void setOwnerId(Member ownerId) {
+    public void setOwnerId(me.injin.the_java_second_test_code.domain.Member ownerId) {
         this.ownerId = ownerId;
     }
 
