@@ -53,6 +53,19 @@ class StudyServiceTestByMock {
     }
 
     //mock Stubbing (mock 객체의 행동)
+
+    /**
+     * Stubbing 이란
+     *  - Mock 객체의 행동을 조작하는 것
+     *
+     * Mock 객체의 행동이란,
+     * 리턴 값이 있는 메소드는 모두 Null 을 리턴하고 있다.
+     *  - Optional 타입인 경우 Optional.empty로 리턴
+     * Primitive 타입은 모두 Primitive 값을 따르고 있다.
+     *  - Ex. Boolean인 경우 'false' / Integer 혹은 Long인 경우 0
+     * Collection의 경우 모두 비어있는 Collection을 가지고 있다.
+     * Void 메소드의 경우 예외를 던지지 않고 아무 일도 발생하지 않는다.
+     */
     @Test
     void createNewStudy() {
         StudyService studyService = new StudyService(memberService, studyRepository);
