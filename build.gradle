@@ -14,8 +14,15 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    //log
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.30'
     implementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    //jpa
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    //lombok
+    implementation 'org.projectlombok:lombok'
+
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 }

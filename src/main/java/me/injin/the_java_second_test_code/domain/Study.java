@@ -1,4 +1,8 @@
-package me.injin.the_java_second_test_code;
+package me.injin.the_java_second_test_code.domain;
+
+import me.injin.the_java_second_test_code.study.StudyStatus;
+
+import java.lang.reflect.Member;
 
 public class Study {
     private StudyStatus status = StudyStatus.DRAFT;
@@ -6,6 +10,12 @@ public class Study {
     private int limit;
 
     private String name;
+
+    public void setOwnerId(Member ownerId) {
+        this.ownerId = ownerId;
+    }
+
+    private Member ownerId;
 
     public Study(int limit, String name) {
         this.limit = limit;
