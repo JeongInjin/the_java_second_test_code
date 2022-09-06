@@ -8,6 +8,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -119,5 +120,39 @@ class StudyServiceTestByMock {
         assertThat(Optional.empty()).isEqualTo(memberService.findById(2L));
     }
 
+    /**
+     * Mock 객체 확 (verify)
+     */
+    @Test
+    void createNewStudyVerify() {
+        StudyService studyService = new StudyService(memberService, studyRepository);
+        assertThat(studyService).isNotNull();
+
+        Member member = new Member();
+        member.setId(1L);
+        member.setEmail("injin@email.com");
+
+        Study study = new Study(10, "Kotlin");
+
+        when(memberService.findById(1L)).thenReturn(Optional.of(member));
+        when(studyRepository.save(study)).thenReturn(study);
+
+        studyService.createNewStudy(1L, study);
+
+        assertThat(member).isEqualTo(study.getOwnerId());
+
+        //studyService mock 객체 호출 시 notify 가 1번 호출되었는가
+        verify(memberService, times(1)).notify(study);
+        verify(memberService, times(1)).notify(member);
+        //호출이 전혀 되지 않았는지
+        verify(memberService, never()).validate(any());
+        //호출 순서 확인
+        InOrder inOrder = inOrder(memberService);
+        inOrder.verify(memberService).notify(study);
+        inOrder.verify(memberService).notify(member);
+
+        //어떤 액션 이후에 더이상 mock 객체를 사용하지 않아야한다 -> 일정 액션뒤에 주석처리해야함
+        verifyNoMoreInteractions(memberService);
+    }
 
 }

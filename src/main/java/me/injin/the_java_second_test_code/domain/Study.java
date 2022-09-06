@@ -1,17 +1,17 @@
 package me.injin.the_java_second_test_code.domain;
 
+import lombok.Getter;
+import lombok.Setter;
 import me.injin.the_java_second_test_code.study.StudyStatus;
 
+@Getter
+@Setter
 public class Study {
     private StudyStatus status = StudyStatus.DRAFT;
 
     private int limit;
 
     private String name;
-
-    public void setOwnerId(me.injin.the_java_second_test_code.domain.Member ownerId) {
-        this.ownerId = ownerId;
-    }
 
     private Member ownerId;
 
