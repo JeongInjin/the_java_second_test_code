@@ -15,8 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class) //@Mock Annotation 을 사용하기위한 extension - 필수
@@ -125,6 +127,7 @@ class StudyServiceTestByMock {
      */
     @Test
     void createNewStudyVerify() {
+        //given
         StudyService studyService = new StudyService(memberService, studyRepository);
         assertThat(studyService).isNotNull();
 
@@ -134,16 +137,27 @@ class StudyServiceTestByMock {
 
         Study study = new Study(10, "Kotlin");
 
-        when(memberService.findById(1L)).thenReturn(Optional.of(member));
-        when(studyRepository.save(study)).thenReturn(study);
+//        when(memberService.findById(1L)).thenReturn(Optional.of(member));
+//        when(studyRepository.save(study)).thenReturn(study);
+        //wheb -> given
+        given(memberService.findById(1L)).willReturn(Optional.of(member));
+        given(studyRepository.save(study)).willReturn(study);
 
+
+        //when
         studyService.createNewStudy(1L, study);
 
+        //then
         assertThat(member).isEqualTo(study.getOwnerId());
 
         //studyService mock 객체 호출 시 notify 가 1번 호출되었는가
         verify(memberService, times(1)).notify(study);
         verify(memberService, times(1)).notify(member);
+        //verify -> then
+        then(memberService).should(times(1)).notify(study);
+        then(memberService).should(times(1)).notify(member);
+
+
         //호출이 전혀 되지 않았는지
         verify(memberService, never()).validate(any());
         //호출 순서 확인
@@ -153,6 +167,8 @@ class StudyServiceTestByMock {
 
         //어떤 액션 이후에 더이상 mock 객체를 사용하지 않아야한다 -> 일정 액션뒤에 주석처리해야함
         verifyNoMoreInteractions(memberService);
+        //then 으로 변경
+        then(memberService).shouldHaveNoMoreInteractions();
     }
 
 }
