@@ -55,3 +55,51 @@ Percentage of the requests served within a certain time (ms)
   - https://naver.github.io/ngrinder/
 - gatling
   - https://gatling.io/
+
+#운영 이슈 테스트
+  - Chaos Monkey
+  - 카오스 엔지니어링
+    - https://netflix.github.io/chaosmonkey/
+    - https://www.baeldung.com/spring-boot-chaos-monkey
+  - 카오스 멍키 스프링부트
+    - https://codecentric.github.io/chaos-monkey-spring-boot/latest/
+    - https://codecentric.github.io/chaos-monkey-spring-boot/
+
+  - 스프링부트에 설치 적용(kotlin, gradle, yml)
+  - 의존성 추가
+    - 
+  - build.gradle
+    - implementation("de.codecentric:chaos-monkey-spring-boot:2.6.1")
+  - CM4SB 설정
+    - yml 설정
+  ```yaml
+  spring:
+  profiles:
+    active: chaos-monkey
+  chaos:
+    monkey:
+      enabled: true
+      watcher:
+        service: true
+      assaults:
+        latencyActive: true
+
+  management:
+  endpoint:
+    chaosmonkey:
+      enabled: true
+    chaosmonkeyjmx:
+      enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        # include all endpoints
+        #      include: "*"
+        # include specific endpoints
+        include:
+          - health
+          - info
+          - chaosmonkey
+  ```
+
