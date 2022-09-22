@@ -4,16 +4,18 @@ import lombok.Getter;
 import lombok.Setter;
 import me.injin.the_java_second_test_code.study.StudyStatus;
 
+import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class Study {
     private StudyStatus status = StudyStatus.DRAFT;
 
     private int limit;
-
     private String name;
+    private LocalDateTime openedDateTime;
 
-    private Member ownerId;
+    private Member owner;
 
     public Study(int limit, String name) {
         this.limit = limit;
@@ -44,5 +46,10 @@ public class Study {
                 ", limit=" + limit +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public void open() {
+        this.openedDateTime = LocalDateTime.now();
+        this.status = StudyStatus.OPENED;
     }
 }

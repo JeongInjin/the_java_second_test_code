@@ -6,6 +6,7 @@ import me.injin.the_java_second_test_code.domain.Study;
 import me.injin.the_java_second_test_code.member.MemberService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InOrder;
@@ -59,13 +60,13 @@ class StudyServiceTestByMock {
 
     /**
      * Stubbing 이란
-     *  - Mock 객체의 행동을 조작하는 것
-     *
+     * - Mock 객체의 행동을 조작하는 것
+     * <p>
      * Mock 객체의 행동이란,
      * 리턴 값이 있는 메소드는 모두 Null 을 리턴하고 있다.
-     *  - Optional 타입인 경우 Optional.empty로 리턴
+     * - Optional 타입인 경우 Optional.empty로 리턴
      * Primitive 타입은 모두 Primitive 값을 따르고 있다.
-     *  - Ex. Boolean인 경우 'false' / Integer 혹은 Long인 경우 0
+     * - Ex. Boolean인 경우 'false' / Integer 혹은 Long인 경우 0
      * Collection의 경우 모두 비어있는 Collection을 가지고 있다.
      * Void 메소드의 경우 예외를 던지지 않고 아무 일도 발생하지 않는다.
      */
@@ -89,7 +90,7 @@ class StudyServiceTestByMock {
 //        when(memberService.findById(1L)).thenThrow(new RuntimeException());
         doThrow(new IllegalArgumentException()).when(memberService).validate(1L);
         assertThrows(IllegalArgumentException.class, () -> {
-           memberService.validate(1L);
+            memberService.validate(1L);
         });
     }
 
@@ -115,8 +116,8 @@ class StudyServiceTestByMock {
         Optional<Member> byId = memberService.findById(3L);
         assertThat("injin@email.com").isEqualTo(byId.get().getEmail());
         //두번째
-        assertThrows(RuntimeException.class, () ->{
-           memberService.findById(1L);
+        assertThrows(RuntimeException.class, () -> {
+            memberService.findById(1L);
         });
         //세번재
         assertThat(Optional.empty()).isEqualTo(memberService.findById(2L));
@@ -148,7 +149,7 @@ class StudyServiceTestByMock {
         studyService.createNewStudy(1L, study);
 
         //then
-        assertThat(member).isEqualTo(study.getOwnerId());
+        assertThat(member).isEqualTo(study.getOwner());
 
         //studyService mock 객체 호출 시 notify 가 1번 호출되었는가
         verify(memberService, times(1)).notify(study);
@@ -171,4 +172,20 @@ class StudyServiceTestByMock {
         then(memberService).shouldHaveNoMoreInteractions();
     }
 
+    @DisplayName("다른 사용자가 볼 수 있도록 스터디를 공개한다.")
+    @Test
+    void openStudy() {
+        //given
+        StudyService studyService = new StudyService(memberService, studyRepository);
+        Study study = new Study(10, "자바");
+        given(studyRepository.save(study)).willReturn(study);
+
+        //when
+        studyService.openStudy(study);
+
+        //then
+        assertThat(study.getStatus()).isEqualTo(StudyStatus.OPENED);
+        assertThat(study.getOpenedDateTime()).isNotNull();
+        then(memberService).should(times(1)).notify(study);
+    }
 }
