@@ -70,6 +70,7 @@ Percentage of the requests served within a certain time (ms)
     - 
   - build.gradle
     - implementation("de.codecentric:chaos-monkey-spring-boot:2.6.1")
+    - implementation('org.springframework.boot:spring-boot-starter-actuator')
   - CM4SB 설정
     - yml 설정
   ```yaml
@@ -102,4 +103,29 @@ Percentage of the requests served within a certain time (ms)
           - info
           - chaosmonkey
   ```
+- 응답지연
+  - https://codecentric.github.io/chaos-monkey-spring-boot/latest/#_latency_assault
+- Repository Watcher 활성화
+  - chaos.monkey.watcher.repository=true
+- 호출 ex
+  - http get http://localhost:8080/book/loan
+```text
+카오스 멍키 활성화
+http post localhost:8080/actuator/chaosmonkey/enable
+카오스 멍키 활성화 확인
+http localhost:8080/actuator/chaosmonkey/status
+카오스 멍키 와처 확인
+http localhost:8080/actuator/chaosmonkey/watchers
+카오스 멍키 지연 공격 설정
+http POST localhost:8080/actuator/chaosmonkey/assaults level=3 latencyRangeStart=2000 latencyRangeEnd=5000 latencyActive=true
+```
 
+#아키텍처 테스트
+- archunit
+  - https://www.archunit.org/
+```text
+//gradle
+dependencies {
+  testImplementation 'com.tngtech.archunit:archunit-junit5:0.23.1'
+}
+```
