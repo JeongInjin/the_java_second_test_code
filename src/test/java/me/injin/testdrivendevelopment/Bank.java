@@ -16,6 +16,6 @@ public class Bank {
     }
 
     public void addRate(String from, String to, int rate) {
-        rates.put(new Pair(from, to), new Integer(rate));
+        rates.put(new Pair(from, to), rate);
     }
 }
