@@ -13,13 +13,13 @@ class Money {
     }
 
     static Money dollar(int amount) {
-        return new Dollar(amount, "USD");
+        return new Money(amount, "USD");
     }
     static Money franc(int amount) {
-        return new Franc(amount, "CHF");
+        return new Money(amount, "CHF");
     }
     Money times(int multiplier){
-        return null;
+        return new Money(amount *  multiplier, currency);
     }
 
     @Override
