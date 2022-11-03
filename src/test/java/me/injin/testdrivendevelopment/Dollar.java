@@ -3,7 +3,7 @@ package me.injin.testdrivendevelopment;
 import java.util.Objects;
 
 public class Dollar {
-    int amount;
+    private int amount;
     public Dollar(int amount) {
         this.amount = amount;
     }
@@ -13,10 +13,8 @@ public class Dollar {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Dollar)) return false;
-        Dollar dollar = (Dollar) o;
+    public boolean equals(Object object) {
+        Dollar dollar = (Dollar) object;
         return amount == dollar.amount;
     }
 
