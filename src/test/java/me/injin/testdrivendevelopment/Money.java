@@ -2,17 +2,23 @@ package me.injin.testdrivendevelopment;
 
 abstract class Money {
     protected int amount;
+    protected String currency;
 
-    public Money(int amount) {
+    public Money(int amount, String currency) {
         this.amount = amount;
+        this.currency = currency;
+    }
+    String currency() {
+        return currency;
     }
 
     static Money dollar(int amount) {
-        return new Dollar(amount);
+        return new Dollar(amount, "USD");
     }
     static Money franc(int amount) {
-        return new Franc(amount);
+        return new Franc(amount, "CHF");
     }
+    abstract Money times(int multiplier);
 
     @Override
     public boolean equals(Object object) {
@@ -20,5 +26,5 @@ abstract class Money {
         return amount == money.amount && getClass().equals(money.getClass());
     }
 
-    abstract Money times(int multiplier);
+
 }
