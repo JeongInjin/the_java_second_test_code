@@ -15,6 +15,7 @@ class GildedRoseTest {
 
         sut.updateQuality();
 
-        assertThat(sut.items[0].toString()).isEqualTo("Item{name='foo', sellIn=-1, quality=0}");
+//        assertThat(sut.items[0].toString()).isEqualTo("Item{name='foo', sellIn=-1, quality=0}");
+        Approvals.verify(sut.items[0].toString());
     }
 }
