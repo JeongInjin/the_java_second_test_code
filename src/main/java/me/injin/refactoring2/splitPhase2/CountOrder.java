@@ -24,7 +24,7 @@ public class CountOrder {
 
     public static void main(String[] args) {
         try {
-            System.out.println(run(args);
+            System.out.println(run(args));
         } catch (Exception e) {
             System.out.println(e);
             System.exit(1);
